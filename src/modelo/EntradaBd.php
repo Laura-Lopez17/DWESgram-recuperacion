@@ -155,4 +155,56 @@ class EntradaBd
             return null;
         }
     }
+
+    public static function getEntradasByName(string $nombre): array // Buscador
+    {
+        try {
+            $conexion = BaseDatos::getConexion();
+            $query = <<<END
+                select
+                    e.id entrada_id,
+                    e.texto entrada_texto,
+                    e.imagen entrada_imagen,
+                    u.id usuario_id,
+                    u.nombre usuario_nombre,
+                    u.avatar usuario_avatar
+                from
+                    entrada e, usuario u
+                where
+                    e.autor=u.id and
+                    e.texto like ?
+                order by
+                    e.creado desc
+            END;
+            $sentencia = $conexion->prepare($query);
+            $nombre = "%$nombre%";
+            $sentencia->bind_param('s', $nombre);
+            $sentencia->execute();
+            $resultado = $sentencia->get_result();
+            if ($resultado === false) {
+                return [];
+            }
+
+            $entradas = [];
+            while (($fila = $resultado->fetch_assoc()) !== null) {
+                $usuario = new Usuario(
+                    id: $fila['usuario_id'],
+                    nombre: $fila['usuario_nombre'],
+                    avatar: $fila['usuario_avatar']
+                );
+                $entrada = new Entrada(
+                    id: $fila['entrada_id'],
+                    texto: $fila['entrada_texto'],
+                    imagen: $fila['entrada_imagen'],
+                    usuario: $usuario,
+                    UsuariosMeGusta: MegustaBd::getUsuariosId($fila['entrada_id'])
+                );
+                $entradas[] = $entrada;
+            }
+            return $entradas;
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+            return [];
+        }
+    }
 }

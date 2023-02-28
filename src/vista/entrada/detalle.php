@@ -9,7 +9,6 @@ if (!empty($datosParaVista['datos']) && $datosParaVista['datos'] != null) {
     $autor = $entrada->getUsuario()->getId();
 
 
-
     if ($entrada->getUsuario() !== null && $sesion->haySesion() && $sesion->getId() == $entrada->getUsuario()->getId()) {
         echo "<a href='index.php?controlador=entrada&accion=eliminar&id=$id' class='btn btn-danger my-3'>Eliminar</a>";
     }

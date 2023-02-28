@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 
@@ -24,13 +23,19 @@
           <li class="nav-item">
             <a class="nav-link" href="index.php">Home</a>
           </li>
+          <li>
+            <a class="nav-link" href="index.php?controlador=ranking&accion=lista">Top 3 Usuarios</a>
+          </li>
+          <a class="nav-link" href="index.php?controlador=estadisticas&accion=lista">Top 3 Me gusta</a>
+          </li>
+
           <?php if ($sesion->haySesion()) { ?>
             <li class="nav-item">
               <a class="nav-link" href="index.php?controlador=entrada&accion=nuevo">Crear entrada</a>
             </li>
-          <?php } 
+          <?php }
           if ($sesion->haySesion()) { ?>
-            <li><a href="index.php?controlador=usuario&accion=logout">Cerrar sesión (<?= $sesion->getNombre()?>)</a> &nbsp; </li>
+            <li><a href="index.php?controlador=usuario&accion=logout">Cerrar sesión (<?= $sesion->getNombre() ?>)</a> &nbsp; </li>
             <img height='70px' width='70px' src="<?= $sesion->getAvatar() !== null ? $sesion->getAvatar() : "../../assets/img/bender.png"; ?>">
           <?php } else { ?>
             <li class="nav-item">

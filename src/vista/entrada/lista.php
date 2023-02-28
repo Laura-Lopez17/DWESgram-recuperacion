@@ -1,4 +1,29 @@
 <?php
+$entradas = $datosParaVista['datos'];
+
+    echo "<div class='container'>";
+    if (count($entradas) == 0 && !isset($_POST['search'])) { // No hay entradas
+        echo <<<END
+        <div class="alert alert-primary" role="alert">
+            No hay entradas publicadas
+        </div>
+        END;
+    } else if (count($entradas) == 0 && isset($_POST['search'])) { // No hay entradas que coincidan con la búsqueda
+        echo <<<END
+        <div class="alert alert-primary" role="alert">
+            No hay entradas que coincidan con la búsqueda
+        </div>
+        END;
+    } else { // Hay entradas, siempre buscador
+        echo <<<END
+        <form action="index.php?controlador=entrada&accion=lista" method="post">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Buscar entradas" name="search">
+                <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Buscar</button>
+            </div>
+        </form>
+        END;
+    }
 
 if (!empty($datosParaVista['datos'])) {
     foreach ($datosParaVista['datos'] as $entrada) {
@@ -7,6 +32,8 @@ if (!empty($datosParaVista['datos'])) {
         $imagen = $entrada->imagen;
         $autor = $entrada->getUsuario()->getId();
         $numeroMegusta = $entrada->getNumeroMegusta();
+
+        
 
         // Mostrar la entrada
         echo <<<HTML

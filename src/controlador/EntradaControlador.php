@@ -6,6 +6,7 @@ use dwesgram\controlador\Controlador;
 use dwesgram\modelo\Entrada as ModeloEntrada;
 use dwesgram\modelo\EntradaBd;
 use dwesgram\utilidades\Sesion;
+use dwesgram\modelo\ComentarioBd;
 
 //devolver vistas de cada funcion
 
@@ -15,6 +16,11 @@ class EntradaControlador extends Controlador
 
     public function lista(): array
     {
+        if ($_POST && isset($_POST['search'])) {
+            $search = htmlspecialchars($_POST['search']);
+            $this->vista = 'entrada/lista';
+            return EntradaBd::getEntradasByName($search); // Buscamos por nombre
+        }
         $this->vista = "entrada/lista";
         return EntradaBd::getEntradas();
     }
@@ -29,10 +35,10 @@ class EntradaControlador extends Controlador
                 return null;
             }
 
-            /*$comentarios = ComentarioBd::getComentarios($id);
+            $comentarios = ComentarioBd::getComentarios($id);
             foreach ($comentarios as $comentario) {
-                $entrada->addComentario($comentario);
-            }*/
+                $entrada->añadirComentario($comentario);
+            }
 
             return $entrada;
         } else {
