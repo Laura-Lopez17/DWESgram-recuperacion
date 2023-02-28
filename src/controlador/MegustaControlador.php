@@ -7,6 +7,7 @@ use dwesgram\modelo\Megusta;
 use dwesgram\modelo\Entrada;
 use dwesgram\modelo\EntradaBd;
 use dwesgram\modelo\MegustaBd;
+use dwesgram\utilidades\Sesion;
 
 class MegustaControlador extends Controlador
 {
@@ -17,7 +18,7 @@ class MegustaControlador extends Controlador
         return $handle['data'];
     }
 
-    private function handleMegusta(): array
+    private function handleMegusta(): array //darMgusta
     {
         if (!$this->comprobacion()) {
             return [
@@ -35,26 +36,36 @@ class MegustaControlador extends Controlador
             ];
         }
 
-        $id = MegustaBd::insertar($megusta);
+        $entrada = EntradaBd::getEntrada($megusta->getEntrada());
+        $sesion = new Sesion();
 
-        if ($id !== null) {
-            $megusta->setId($id);
+        if ($entrada->getUsuario()->getId() != $sesion->getId()) {
+            $id = MegustaBd::insertar($megusta);
+
+            if ($id !== null) {
+                $megusta->setId($id);
+            }
+
+            $volver = $_GET && isset($_GET['volver']) ? htmlspecialchars($_GET['volver']) : 'lista';
+
+            switch ($volver) {
+                case 'detalle':
+                    return [
+                        'vista' => 'entrada/detalle',
+                        'data' => EntradaBd::getEntrada($megusta->getEntrada()),
+                    ];
+                default:
+                    return [
+                        'vista' => 'entrada/lista',
+                        'data' => EntradaBd::getEntradas(),
+                    ];
+            }
         }
-
-        $volver = $_GET && isset($_GET['volver']) ? htmlspecialchars($_GET['volver']) : 'lista';
-
-        switch ($volver) {
-            case 'detalle':
-                return [
-                    'vista' => 'entrada/detalle',
-                    'data' => EntradaBd::getEntrada($megusta->getEntrada()),
-                ];
-            default:
-                return [
-                    'vista' => 'entrada/lista',
-                    'data' => EntradaBd::getEntradas(),
-                ];
-        }
+        
+        return [
+            'vista' => 'entrada/lista',
+            'data' => EntradaBd::getEntradas(),
+        ];
     }
 
     private function comprobacion(): bool

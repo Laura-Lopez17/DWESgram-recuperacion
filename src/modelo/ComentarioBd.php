@@ -33,7 +33,7 @@ class ComentarioBd
     {
         try {
             $conexion = BaseDatos::getConexion();
-            $query = "select c.id, c.comentario, c.entrada, c.usuario from comentario c, entrada e where c.entrada=e.id order by e.creado desc";
+            $query = "select * from comentario where entrada = $entradaId";
             $resultado = $conexion->query($query);
             $comentarios = [];
             while (($fila = $resultado->fetch_assoc()) !== null) {
